@@ -4,7 +4,7 @@ MAX_SIZE = 2048
 def client_function():
     #host = socket.gethostname()  # only works when the server and the client are working on the same machine
     #host = input("Choose the name of the host (you can find it once the server is launched) : ")
-    host = "25.22.85.243"
+    host = "25.26.61.36"
     port = input("Choose a port number (you can find it once the server is launched): ")  # socket server port number
 
     print(host)
