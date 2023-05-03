@@ -1,10 +1,10 @@
 import socket
-nb_players = 10
+nb_players = 2
 MAX_SIZE = 2048
 
 def server_function():
-    # host = socket.gethostname() #get the name of host's machine
-    host = "25.22.85.243"
+    #host = socket.gethostname() #get the name of host's machine
+    host = "25.26.61.36"
     print("hostname = %s"%host)
 
     port = input("Choose a port number : ")
