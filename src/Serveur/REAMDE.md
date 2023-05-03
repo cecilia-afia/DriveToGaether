@@ -25,6 +25,8 @@ To run the server:
   - Wait for the clients to connect
 
 To run the client:
+   -
+   - Connect to the server with Hamachi
    - Wait for the server to be ready
    - Retrieve the hostname (should be printed when the server is being runned) and pass it to the "host" variable in "clientSocket.py"
    - Retrieve the port number (should be printed when the server is being runned) and pass it to the "port" variable in "clientSocket.py"
