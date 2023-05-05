@@ -2,7 +2,7 @@
 
 !!! POUR LE MOMENT, CETTE METHODE NE SERT QUE POUR LES TESTS ET PEUT ETRE AMENEE A CHANGER VOIRE ENTIEREMENT DISPARAITRE !!!
 
-To run the server:
+In both cases:
   -
   - Install Hamachi : https://www.vpn.net/linux
   - Install Haguichi (allow to use Hamachi):  
@@ -16,6 +16,9 @@ To run the server:
   haguichi&
   ```
   - Configure haguichi by pressing "Configure" (doesn't need any humain input)
+
+  To run the server:
+  -
   - Retrieve ipv4 of the server from Haguichi or Hamachi
   - Run "serverPocket.py":
   ```sh
