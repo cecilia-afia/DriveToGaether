@@ -1,9 +1,11 @@
 ## NB PLAYERS ##
-5
+3
 ## NB ROBOTS ##
 5
 ## IDENTIF PLAYER ##
 1:1,5,2 2:3 3:4
+## DIMENSION ##
+row:3 column:7
 ## GROUND ##
 1 2 3 11 10	11 10
 4 5 6 0 0 0 0
