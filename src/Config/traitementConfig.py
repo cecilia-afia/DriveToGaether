@@ -153,12 +153,10 @@ except ValueError:
 	print("\nThere's an error in the terrain representation; \ncheck that every row has the same length; \ncheck that every value is a number; \ncheck that every number is lesser than",sys.argv[2],"which is the number of tiles possible; \nthe terrain representation NEEDS to be the last thing of the config file")
 	exit(4)
 
-try:
-	if (row != matrix.shape[0] or col != matrix.shape[1]):
-		raise Exception("The dimension of the terrain is not the same in the representation and in the values you entered in the category DIMENSION")
-
-except Exception as error:
-	print(error)
+## TEST DIMENSION VALID ##
+if (row != matrix.shape[0] or col != matrix.shape[1]):
+	print("The dimension of the terrain is not the same in the representation and in the values you entered in the category DIMENSION")
 	exit(6)
+## END TEST DIMENSION VALID ##
 
 print("\nVue d'ensemble du terrain : \n",matrix,"\n")
