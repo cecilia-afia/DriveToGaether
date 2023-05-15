@@ -1,0 +1,10 @@
+## NB PLAYERS ##
+5
+## NB ROBOTS ##
+5
+## IDENTIF PLAYER ##
+1:1,5,2 2:3 3:4
+## GROUND ##
+1 2 3 11 10	11 10
+4 5 6 0 0 0 0
+7 8 9 0 0 0 0
