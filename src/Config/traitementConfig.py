@@ -2,13 +2,16 @@ import numpy as np
 import sys
 
 
-## TEST NUMBER OF ARGUMENTS ##
+	####################
+    ####### TESTS ######
+    ####################
 
+## TEST CORRECT USAGE
 if len(sys.argv) != 3:
 	print("Usage : %s <config_file.txt> <number_of_tiles_possible>"%sys.argv[0])
 	exit(1)
 
-## END TEST NUMBER OF ARGUMENTS ##
+## END TEST CORRECT USAGE ##
 
 nbPossibleTiles = int(sys.argv[2]) #stores the number of possible tiles 
 
@@ -24,9 +27,17 @@ except Exception as error:
 	print(error)
 	exit(2)
 
-## END TEST NUMBER OF LINES ##
+	####################
+    ##### END TESTS ####
+    ####################
 
-## FUNCTIONS ##
+
+
+
+
+	####################
+    ##### FUNCTIONS ####
+    ####################
 
 ## this function is used to convert a str to an int in the function np.loadtxt()
 ## if the value that is converted to an int is greater than nbPossibleTiles, an exception is raised
@@ -39,38 +50,50 @@ def conv(val):
 ## this function is used to count the number of values in a dictionnary.
 ## in our case, it helps determine if there's the same number of robots in the catergory "NB ROBOTS" and in the dictionnary depicting the repartion of the robots
 
-def countDict(dict):
+"""
+def countDict(dict): ## UNUSED 
 	count = 0
 	for c in dict:
 		if isinstance(dict[c],list):
 			count += len(dict[c])
 		else:
 			count += 1
-	return count
+	return count 
+"""
+	####################
+    ## END FUNCTIONS ###
+    ####################
 
 
-## END FUNCTIONS ##
 
+	####################
+    ###### MAIN ########
+    ####################
+
+nb_lignes = 0 # will help determine how many lines the "np.loadtxt()" function will need to skip to get to the terrain representation
 try:
 	nb_categories = 0
 	with open(sys.argv[1]) as file:
 
 		for line in file:
 			#print(line)
+			
 			try: 
-				if "PLAYERS" in line: #if the line contains "PLAYERS", the next line should hold the number of players
+				if "NB PLAYERS" in line: #if the line contains "NB PLAYERS", the next line should hold the number of players
 						players = int(file.readline())
 						print("\nnb players = ",players)
 						nb_categories += 1
+						nb_lignes += 2
 			except Exception:
 				print("There's a problem with the number of players")
 				exit(4)
 
 			try:
-				if "ROBOTS" in line: #if the line contains "ROBOTS", the next line should hold the number of probots
+				if "NB ROBOTS" in line: #if the line contains "NB ROBOTS", the next line should hold the number of probots
 					robots= int(file.readline())
 					print("\nnb robots = ",robots)
 					nb_categories += 1
+					nb_lignes += 2
 
 			except Exception:
 				print("There's a problem with the number of robots")
@@ -80,7 +103,6 @@ try:
 				if "DIMENSION" in line: #if the line contains "DIMENSION", the next line should hold the dimension of the terrain
 					ligne = str(file.readline())
 					ligne = ligne.split(" ")
-					print(ligne)
 					for dim in ligne:
 						if "row" in dim:
 							row = int(dim.split(":")[1])
@@ -89,56 +111,93 @@ try:
 						else:
 							raise Exception("Error while reading the dimension of the terrain")
 					print("Nb rows: ",row,"\nNb columns: ",col)
+					nb_categories += 1
+					nb_lignes += 2
+
+			except Exception as error:
+				print(error)
+				exit(5)
+
+			try: ## A RETRAVAILLER COMPLETEMENT
+				if "INFOS ROBOTS" in line: #if the line contains "INFOS ROBOTS", the next line should hold the repartition of the robots
+					dic_identif = {}
+					ligne = str(file.readline())
+					ligne = ligne.split(" ")
+					for robot_info in ligne:
+					    robot_info = robot_info.split(":")
+					    num_robot = robot_info[0]
+					    robot_info = robot_info[1].split(",")
+					    print(robot_info)
+					    if len(robot_info) != 4:
+					        raise Exception("Not enough informations is given for one of the robots")
+					    else:
+					        dic_identif[num_robot] = [] # we create a new entry in the dictionnary
+					        x = 0 # will hold the x position of the starting point
+					        y = 0 # will hold the y position of the starting point
+					        num_info = 0
+					        for infos in robot_info:
+					            if num_info == 0:
+					                dic_identif[num_robot].append(int(infos))
+					            if num_info == 1:
+					                x = int(infos) 
+					            if num_info == 2:
+					                y = int(infos)
+					                dic_identif[num_robot].append([x,y])
+					            if num_info == 3:
+					                dic_identif[num_robot].append(infos)
+					            num_info += 1
+
+
+					print("\nRobots informations:\n",dic_identif)
+					print("\n")
+					nb_categories += 1
+					nb_lignes += 2
+
 			except Exception as error:
 				print(error)
 				exit(5)
 
 			try:
+				if "SPECIAL POINTS" in line:
+					infos = str(file.readline()) # infos should hold a line that resembles: "H:2,5;3,2 V:3,1;3,6"
+					infos = infos.split(" ")
 
+					if len(infos) > 2:
+						raise Exception
 
-				if "IDENTIF" in line: #if the line contains "IDENTIF", the next line should hold the repartition of the robots
-					dic_identif = {}
-					ligne = str(file.readline())
-					ligne = ligne.replace(','," ")
-					ligne = ligne.split(" ")
-					for mot in ligne:
-						if ":" in mot: # if this is a new player, the format of "mot" will be player_id:robot_id, exemple: 2:5
+					coord_l_v = [] # list of the coordinates of the victims
+					coord_l_h = [] # list of the coordinates of the hospitals
 
-							mot = mot.split(":")
-							cle = mot[0]
+					for coord in infos:
+						if "H" in coord:
+							h = infos[0].split(":")[1].split(";") # hold the coordinates of the hospitals
+							for coord_h in h:
+								coord_h = coord_h.split(",")
+								coord_l_h.append([int(coord_h[0]),int(coord_h[1])])
 
-							if cle in dic_identif:
-								dic_identif[cle].append(int(mot[1]))
-							else:
-								dic_identif[cle] = [int(mot[1])]
+						if "V" in coord:
+							v = infos[1].split(":")[1].split(";") # hold the coordinates of the victims
+							for coord_v in v:
+							    coord_v = coord_v.split(",")
+							    coord_l_v.append([int(coord_v[0]),int(coord_v[1])])
 
-						else:
-							dic_identif[cle].append(int(mot))
+					if len(coord_l_h) != 0 :
+						print("Hospitals coordinates : ", coord_l_h)
+					if len(coord_l_v) != 0 :
+						print("Victims  coordinates : ", coord_l_v,"\n")
 
-					## TEST NUMBER PLAYERS ##
-					if len(dic_identif) != players:
-						raise Exception("There's not the same number of players in the dictionnary of affectation that the number of players in the config file")
-					## END TEST NUMBER PLAYERS ##
+					nb_lignes += 2
 
-					## TEST NUMBER ROBOTS ##
-					if countDict(dic_identif) != robots:
-						raise Exception("There's not the same number of robots in the dictionnary of affectation that the number of robots in the config file")
-					## END TEST NUMBER ROBOTS ##
+			except Exception:
+				print("There's a problem with the format of the coordinates of either the victimes, either the hospitals. Or, you added more than those two informations")
+				exit(7)
 
-					print("\nRépartition des robots :\n",dic_identif)
-					nb_categories += 1
-
-			except Exception as error:
-				print(error)
-				exit(5)
-
-
-			if line == "\n":
+			if line == "\n" and nb_categories < 4:
 				raise Exception("You can't have an empty line in your config.txt")
 		
 
-		if nb_categories != 3:
-			raise Exception("There's not enough informations in the config.txt; you need to have at least the three following: ## NB PLAYERS ##, ## NB ROBOTS ##, ## IDENTIF PLAYER ##")
+		if nb_categories != 4:
+			raise Exception("There's not enough informations in the config.txt; you need to have at least the four following: ## NB PLAYERS ##, ## NB ROBOTS ##, ## DIMENSION ##, ## INFOS ROBOTS ##")
 
 
 except Exception as error:
@@ -147,7 +206,7 @@ except Exception as error:
 
 
 try:
-	matrix = np.loadtxt(sys.argv[1],skiprows=9,converters=conv) # if no mistakes were made before, the matrix representing the terrain will start at row 10
+	matrix = np.loadtxt(sys.argv[1],skiprows=nb_lignes+1,converters=conv) # if no mistakes were made before, the matrix representing the terrain will start at row 10
 
 except ValueError:
 	print("\nThere's an error in the terrain representation; \ncheck that every row has the same length; \ncheck that every value is a number; \ncheck that every number is lesser than",sys.argv[2],"which is the number of tiles possible; \nthe terrain representation NEEDS to be the last thing of the config file")
@@ -155,8 +214,22 @@ except ValueError:
 
 ## TEST DIMENSION VALID ##
 if (row != matrix.shape[0] or col != matrix.shape[1]):
-	print("The dimension of the terrain is not the same in the representation and in the values you entered in the category DIMENSION")
+	print(matrix.shape)
+	print("The dimension of the terrain is not the same in the representation and in the value you entered in the category DIMENSION")
 	exit(6)
 ## END TEST DIMENSION VALID ##
+
+## TEST NUMBER PLAYERS ##
+if len(dic_identif) != robots:
+	print("There's not the same number of robots in the dictionnary of affectation that the number of players in the config file")
+	exit(8)
+## END TEST NUMBER PLAYERS ##
+
+## TEST NUMBER ROBOTS ##
+"""
+if countDict(dic_identif) != robots:
+	raise Exception("There's not the same number of robots in the dictionnary of affectation that the number of robots in the config file") ## UNUSED
+"""
+## END TEST NUMBER ROBOTS ##
 
 print("\nVue d'ensemble du terrain : \n",matrix,"\n")
