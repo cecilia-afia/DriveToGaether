@@ -1,7 +1,7 @@
 ## NB PLAYERS ##
 2
 ## NB ROBOTS ##
-3
+2
 ## INFOS ROBOTS ##
 2:5,1,S 3:9,8,E
 ## SPECIAL POINTS ##
