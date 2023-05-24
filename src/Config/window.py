@@ -270,7 +270,6 @@ class Window(Frame):
                     if len(special_points) != 0:
                         self.file_save.write("## SPECIAL POINTS ##\n"+special_points)
                     dimension = str("row:"+nb_rows+"column:"+nb_col)
-                    dimension = str("row:"+nb_rows+"column:"+nb_col)
                     dimension = dimension.replace("\n", " ",1)
                     self.file_save.write("## DIMENSION ##\n"+dimension)
                     self.file_save.write("## GROUND ##\n"+self.text_ground.get(1.0, END))
@@ -395,6 +394,7 @@ class Window(Frame):
 
                     if "SPECIAL POINTS" in line:
                         infos = str(file.readline())
+                        infos = infos.replace("\n","")
                         infos = infos.split(" ")
 
                         if len(infos) > 2:
@@ -529,19 +529,17 @@ class Window(Frame):
     ## RETRIEVE THE INFORMATIONS OF SPECIAL POINTS (SP)
     def all_SP_informations(self):
         infos = ""
-        infos_v = ""
-        infos_h = ""
         nb = 0 # count the number of informations that we added to "infos"
         if len(self.hospitals_text.get(1.0,END)) != 1:
-            infos_h+="H:"+self.hospitals_text.get(1.0,END)
+            infos+="H:"+self.hospitals_text.get(1.0,END)
             nb+=1
         if len(self.victims_text.get(1.0,END)) != 1:
-            infos_v+="V:"+self.victims_text.get(1.0,END)
+            infos+="V:"+self.victims_text.get(1.0,END)
             nb+=1
-        infos = infos_h + infos_v
         infos = infos.replace("\n"," ",nb)
         infos = "".join(infos.rsplit(" ",1)) ## replace only the last whitespace, which caused an error in the config file
-        return infos
+        infos += "\n"
+        return str(infos)
 
 
 
