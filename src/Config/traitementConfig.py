@@ -60,6 +60,11 @@ def countDict(dict): ## UNUSED
 			count += 1
 	return count 
 """
+
+## this function checks if the input "value" is truly an orientation
+def is_orientation(value):
+	return value == "N" or value == "S" or value == "E" or value == "O"
+
 	####################
     ## END FUNCTIONS ###
     ####################
@@ -118,7 +123,7 @@ try:
 				print(error)
 				exit(5)
 
-			try: ## A RETRAVAILLER COMPLETEMENT
+			try: 
 				if "INFOS ROBOTS" in line: #if the line contains "INFOS ROBOTS", the next line should hold the repartition of the robots
 					dic_identif = {}
 					ligne = str(file.readline())
@@ -127,8 +132,7 @@ try:
 					    robot_info = robot_info.split(":")
 					    num_robot = robot_info[0]
 					    robot_info = robot_info[1].split(",")
-					    print(robot_info)
-					    if len(robot_info) != 4:
+					    if len(robot_info) != 3:
 					        raise Exception("Not enough informations is given for one of the robots")
 					    else:
 					        dic_identif[num_robot] = [] # we create a new entry in the dictionnary
@@ -137,16 +141,19 @@ try:
 					        num_info = 0
 					        for infos in robot_info:
 					            if num_info == 0:
-					                dic_identif[num_robot].append(int(infos))
-					            if num_info == 1:
 					                x = int(infos) 
-					            if num_info == 2:
+					            elif num_info == 1:
 					                y = int(infos)
 					                dic_identif[num_robot].append([x,y])
-					            if num_info == 3:
-					                dic_identif[num_robot].append(infos)
+					            elif num_info == 2 and is_orientation(infos.replace("\n","")):
+
+					                dic_identif[num_robot].append(infos.replace("\n",""))
+					            else: # in case there's more than 3 informations for the robot 
+					            	raise Exception("Too much informations were given for the robot number :",num_robot,"or you gave it a wrong value for the orientation")
 					            num_info += 1
 
+					        if num_info != 3: # if all 3 informations are present, "num_info" will store "3". If not, the informations are incorrect
+					        	raise Exception("Not enough informations were given for the robot",num_robot)
 
 					print("\nRobots informations:\n",dic_identif)
 					print("\n")
@@ -175,11 +182,13 @@ try:
 								coord_h = coord_h.split(",")
 								coord_l_h.append([int(coord_h[0]),int(coord_h[1])])
 
-						if "V" in coord:
+						elif "V" in coord:
 							v = infos[1].split(":")[1].split(";") # hold the coordinates of the victims
 							for coord_v in v:
 							    coord_v = coord_v.split(",")
 							    coord_l_v.append([int(coord_v[0]),int(coord_v[1])])
+						else:
+							raise Exception
 
 					if len(coord_l_h) != 0 :
 						print("Hospitals coordinates : ", coord_l_h)
@@ -232,4 +241,4 @@ if countDict(dic_identif) != robots:
 """
 ## END TEST NUMBER ROBOTS ##
 
-print("\nVue d'ensemble du terrain : \n",matrix,"\n")
+print("\nEncoded view of the terrain : \n",matrix,"\n")
