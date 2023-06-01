@@ -65,6 +65,10 @@ def is_compatible_left(actual_tile, left_tile):
 def is_compatible_up(actual_tile, up_tile): 
     return (actual_tile.N == up_tile.S) or (actual_tile.W == 2) or (up_tile.E == 2)
 
+# test if the positions are in the grid
+def positions_are_valide(tuple_pos, row, col):
+	return tuple_pos[0]*tuple_pos[1] <= (row-1) * (col-1) #we need to decrement row and col, tuple_pos could be (0,0) wich is the upper-left tile
+
 	####################
     ## END FUNCTIONS ###
     ####################
@@ -104,8 +108,20 @@ if __name__ == '__main__':
 	    ##### END TESTS ####
 	    ####################
 
-	is_valid = True # is used when we determine if a tile is compatible with its neighbors
+
+	####################
+    ##### VARIABLES ####
+    ####################
+
+	tile_is_valid = True # is used when we determine if a tile is compatible with its neighbors
 	nb_lignes = 0 # will help determine how many lines the "np.loadtxt()" function will need to skip to get to the terrain representation
+	coord_l_v = [] # list of the coordinates of the victims, will stay empty if there's no victim
+	coord_l_h = [] # list of the coordinates of the hospitals
+
+	####################
+    ### END VARIABLES ##
+    ####################
+
 	try:
 		nb_categories = 0
 		with open(sys.argv[1]) as file:
@@ -174,7 +190,7 @@ if __name__ == '__main__':
 						                x = int(infos) 
 						            elif num_info == 1:
 						                y = int(infos)
-						                dic_identif[num_robot].append([x,y])
+						                dic_identif[num_robot].append((x,y))
 						            elif num_info == 2 and is_orientation(infos.replace("\n","")):
 
 						                dic_identif[num_robot].append(infos.replace("\n",""))
@@ -202,21 +218,18 @@ if __name__ == '__main__':
 						if len(infos) > 2:
 							raise Exception
 
-						coord_l_v = [] # list of the coordinates of the victims
-						coord_l_h = [] # list of the coordinates of the hospitals
-
 						for coord in infos:
 							if "H" in coord:
 								h = infos[0].split(":")[1].split(";") # hold the coordinates of the hospitals
 								for coord_h in h:
 									coord_h = coord_h.split(",")
-									coord_l_h.append([int(coord_h[0]),int(coord_h[1])])
+									coord_l_h.append((int(coord_h[0]),int(coord_h[1])))
 
 							elif "V" in coord:
 								v = infos[1].split(":")[1].split(";") # hold the coordinates of the victims
 								for coord_v in v:
 								    coord_v = coord_v.split(",")
-								    coord_l_v.append([int(coord_v[0]),int(coord_v[1])])
+								    coord_l_v.append((int(coord_v[0]),int(coord_v[1])))
 							else:
 								raise Exception
 
@@ -271,6 +284,26 @@ if __name__ == '__main__':
 	"""
 	## END TEST NUMBER ROBOTS ##
 
+	## TEST VALID POSITIONS OF SPECIAL POINTS ##
+	try:
+		if len(coord_l_v):
+			for positions in coord_l_v:
+				if not(positions_are_valide(positions,row,col)) and matrix[positions[0],positions[1]] != 0:
+					raise Exception("The victim located at ",positions," is not in the grid or is on an empty tile")
+
+		if len(coord_l_h):
+			for positions in coord_l_h:
+				print(positions)
+				if not(positions_are_valide(positions,row,col)) and matrix[positions[0],positions[1]] != 0:
+					raise Exception("The hospital located at ", positions, " is not in the grid or is on an empty tile")
+
+
+	except Exception as error:
+		print(error)
+		exit(9)
+
+	## END TEST VALID POSITIONS OF SPECIAL POINTS ##
+
 	print("\nEncoded view of the terrain : \n",matrix,"\n")
 
 	transformation_to_tile = np.vectorize(create_tile)
@@ -282,9 +315,9 @@ if __name__ == '__main__':
 	    x = i[0]
 	    y = i[1]
 	    if x:
-	        is_valid = is_valid and is_compatible_left(final_matrix[x,y],final_matrix[x,y-1])
+	        tile_is_valid = tile_is_valid and is_compatible_left(final_matrix[x,y],final_matrix[x,y-1])
 	        if y:
-	        	is_valid = is_valid and is_compatible_up(final_matrix[x,y],final_matrix[x-1,y])
-	    if not(is_valid):
+	        	tile_is_valid = tile_is_valid and is_compatible_up(final_matrix[x,y],final_matrix[x-1,y])
+	    if not(tile_is_valid):
 	    	print("The tiles at the coordinates ",x,y," and ",x,y-1," or ",x-1,y," are not compatible, check them")
 	    	exit(9)
