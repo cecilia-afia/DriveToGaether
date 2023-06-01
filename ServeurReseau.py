@@ -14,6 +14,31 @@ victim_positions = []
 loaded_victims = []
 
 
+def read_configuration_file(file_path):
+    terrain_info = {}
+
+    try:
+        with open(file_path, 'r') as file:
+            for line in file:
+                # Ignorer les lignes vides et les lignes de commentaire commençant par #
+                if line.strip() == '' or line.strip().startswith('#'):
+                    continue
+
+                # Séparer la clé et la valeur en utilisant le signe égal (=) comme séparateur
+                key, value = line.strip().split('=')
+
+                # Ajouter la paire clé-valeur au dictionnaire des informations du terrain
+                terrain_info[key.strip()] = value.strip()
+
+    except FileNotFoundError:
+        print(f"Le fichier {file_path} n'a pas été trouvé.")
+    except Exception as e:
+        print(f"Une erreur s'est produite lors de la lecture du fichier : {str(e)}")
+
+    return terrain_info
+
+    
+
 # Vérifier si la position donnée correspond à l'hôpital
 def is_hospital_position(x, y):
     hospital_x = 50  # Coordonnée X de l'hôpital (exemple)
@@ -61,7 +86,6 @@ def is_valid_credentials(username, password):
 
     # Fermer la connexion à la base de données après utilisation
     conn.close()
-
 
 def create_session(username):
     # Générer un identifiant de session unique
