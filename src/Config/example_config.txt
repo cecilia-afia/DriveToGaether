@@ -1,0 +1,14 @@
+## NB PLAYERS ##
+2
+## NB ROBOTS ##
+2
+## INFOS ROBOTS ##
+2:5,1,S 3:9,8,E
+## SPECIAL POINTS ##
+H:2,2 V:1,1;0,0
+## DIMENSION ##
+row:3 column:3
+## GROUND ##
+5 1 6 
+2 0 2 
+3 1 4
