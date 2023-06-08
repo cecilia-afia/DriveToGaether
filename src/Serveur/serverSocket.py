@@ -1,8 +1,9 @@
 import socket
 import sys
+import subprocess
 from _thread import *
 
-nb_players = 4
+nb_players = 8
 MAX_SIZE = 2048
 
 def server_function(conn,numClient):
@@ -17,6 +18,9 @@ def server_function(conn,numClient):
             print("End of communication with the client %d"%numClient)
             break
         print("from client number",numClient,": " + str(recv))
+        cmd = ['../../Robot/ServerToRaspToBot.py',recv]
+        #exec(open(cmd).read())
+        subprocess.run(["python3"] + cmd) 
         data = input("Response : ")
         #data = "OK"
 
