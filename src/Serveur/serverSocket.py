@@ -18,7 +18,7 @@ def server_function(conn,numClient):
             print("End of communication with the client %d"%numClient)
             break
         print("from client number",numClient,": " + str(recv))
-        cmd = ['../../Robot/ServerToRaspToBot.py',recv]
+        cmd = ['../Robot/ServerToRaspToBot.py',recv]
         #exec(open(cmd).read())
         subprocess.run(["python3"] + cmd) 
         data = input("Response : ")

@@ -18,17 +18,18 @@ def server_function(conn,numClient):
             print("End of communication with the client %d"%numClient)
             break
         print("from client number",numClient,": " + str(recv))
-        cmd = ['../../Robot/ServerToRaspToBot.py',recv]
+        cmd = ['../Robot/ServerToRaspToBot.py',recv]
         #exec(open(cmd).read())
-        subprocess.run(["python3"] + cmd) 
-        data = input("Response : ")
+        subprocess.run(["python3"] + cmd)
+        print("salut")
+        #data = input("Response : ")
         #data = "OK"
 
         if (data.lower().strip() == "end"):
             conn.close()
             server_socket.close()
 
-        conn.send(data.encode())  # send data to the client
+        conn.send(recv.encode())  # send data to the client
 
     nbClientConnectes -= 1
     conn.close()  # close the connection
