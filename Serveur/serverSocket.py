@@ -21,7 +21,6 @@ def server_function(conn,numClient):
         cmd = ['../Robot/ServerToRaspToBot.py',recv]
         #exec(open(cmd).read())
         subprocess.run(["python3"] + cmd)
-        print("salut")
         #data = input("Response : ")
         #data = "OK"
 
