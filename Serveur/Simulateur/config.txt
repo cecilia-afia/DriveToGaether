@@ -1,0 +1,5 @@
+X   X   _   R1W   X
+P   H   _   _   R2S
+R3S   P   _   H   _
+P   X   _   X   P
+P   _   _   _   _
