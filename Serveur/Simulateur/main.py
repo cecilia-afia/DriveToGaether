@@ -407,17 +407,17 @@ simulator = Simulator(data)
 for x in simulator.robots:
     print(x.name,x.position)
 text = Label(master,text="Informations")
-text.grid(row=0, column=5)
+text.grid(row=0, column=WIDTH)
 text = Label(master,text="Nombre de victimes à sauver :")
-text.grid(row=1, column=5)
+text.grid(row=1, column=WIDTH)
 victims_count = Label(master,text=str(simulator.victim_count))
-victims_count.grid(row=2, column=5)
+victims_count.grid(row=2, column=WIDTH)
 text = Label(master,text="Nombre de victimes sauvées :")
-text.grid(row=3, column=5)
+text.grid(row=3, column=WIDTH)
 saved_count = Label(master,text="")
-saved_count.grid(row=4, column=5)
+saved_count.grid(row=4, column=WIDTH)
 master.update()
-master.after(500)
+master.after(1500)
 
 #While there is a victim to save
 while simulator.saved_count<simulator.victim_count:
@@ -430,7 +430,7 @@ while simulator.saved_count<simulator.victim_count:
     saved_count.configure(text=str(simulator.saved_count))
     #Update the GUI
     master.update()
-    #sleep 200ms
-    master.after(200)
+    #sleep 300ms
+    master.after(300)
 
 master.mainloop()
